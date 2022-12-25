@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gas Detection</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      background-color: #363535;
+    }
+
+    .title_div {
+      display: flex;
+      text-align: center;
+      flex-direction: row;
+
+      background-color: #363535;
+    }
+
+    #sliderBox {
+      width: 400px;
+      height: 100px;
+      background-color: rgb(105, 99, 99);
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .slider {
+      width: 100%;
+      max-width: 100%;
+      height: 20px;
+      background-color: #363535;
+      border-radius: 10px;
+      
+    }
+
+    h1,
+    h2,
+    h3 {
+      color: #c9c9c9;
+    }
+   .title_div{
+     display: flex;
+      justify-content: center;
+      width: 100%;
+      font-size: 30px;
+      flex-direction: column;
+      padding-bottom: 10%;
+    }
+    .slider-fill {
+      height: 100%;
+      max-width: 100%;
+      background-color: #fefffe;
+      border-radius: 10px;
+      transition: width 0.5s ease;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="title_div">
+    <h1>Gas Detection</h1>
+    <h3>by Kenan Alić</h3>
+  </div>
+  <div id="sliderBox">
+    <h1 id="Value">0</h1>
+    <div class="slider">
+      <div class="slider-fill"></div>
+    </div>
+    <h2>4096</h2>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-database.js"></script>
+  <script>
+    let cooldown = false;
+
+    var vrijednost = document.getElementById('Value');
+    const firebaseConfig = {
+
+      apiKey: "firebase>project settings>your apps",
+
+      authDomain: "firebase>project settings>your apps",
+
+      databaseURL: "firebase>project settings>your apps",
+
+      projectId: "firebase>project settings>your apps",
+
+      storageBucket: "firebase>project settings>your apps",
+
+      messagingSenderId: "firebase>project settings>your apps",
+
+      appId: "firebase>project settings>your apps"
+    };
+
+
+
+    firebase.initializeApp(firebaseConfig);
+
+    const db = firebase.database();
+
+    db.ref('/Air/PPM').on('value', snap => {
+      vrijednost.innerHTML = snap.val();
+      if (snap.val() > 1500 && cooldown == false) {
+        cooldown = true;
+        alert("Gas Detected");
+        setTimeout(() => {
+          cooldown = false;
+        }, 60000);
+
+      }
+    });
+
+    db.ref('/Air/PPM').on('value', snap => {
+      document.querySelector('.slider-fill').style.width = `${snap.val() / 4095 * 100}%`;
+    });
+
+
+  </script>
+</body>
+
+</html>
